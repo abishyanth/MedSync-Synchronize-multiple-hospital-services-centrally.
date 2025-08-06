@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
+  <div class="container-fluid">
+
+    <a class="navbar-brand">{{ hospital.hname }}</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+            data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" 
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav ms-auto">
+
+        {% if request.resolver_match.url_name == 'doctor_list' or request.resolver_match.url_name == 'patient_list' %}
+          <a class="nav-link" href="{% url 'hospital:hospital_detail' hospital.id %}">Home</a>
+        {% else %}
+          <a class="nav-link" href="{% url 'hospital:hospitals' %}">Home</a>
+      
+          {% if user.is_superuser %}
+            <a class="nav-link" href="{% url 'hospital:add_department' hospital.id %}">Add Department</a>
+            <a class="nav-link" href="{% url 'hospital:add_doctor' hospital.id %}">Add Doctor</a>
+            <a class="nav-link" href="{% url 'hospital:add_patient' hospital.id %}">Add Patient</a>
+          {% elif is_doctor %}
+            <a class="nav-link" href="{% url 'hospital:add_doctor' hospital.id %}">Add Doctor</a>
+          {% elif is_patient %}
+            <a class="nav-link" href="{% url 'hospital:add_patient' hospital.id %}">Add Patient</a>
+          {% endif %}
+        {% endif %}
+      
+        {# Doctors link — shown only if not on doctor_list page and not a doctor (unless superuser) #}
+        {% if request.resolver_match.url_name != 'doctor_list' %}
+          {% if not is_doctor or user.is_superuser %}
+            <a class="nav-link" href="{% url 'hospital:doctor_list' hospital.id %}">Doctors</a>
+          {% endif %}
+        {% endif %}
+      
+        {# Patients link — shown only if not on patient_list page and not a patient (unless superuser) #}
+        {% if request.resolver_match.url_name != 'patient_list' %}
+          {% if not is_patient or user.is_superuser %}
+            <a class="nav-link" href="{% url 'hospital:patient_list' hospital.id %}">Patients</a>
+          {% endif %}
+        {% endif %}
+      
+      </div>
+      
+  </div>
+</nav>

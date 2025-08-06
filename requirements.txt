@@ -1,0 +1,6 @@
+#Recomended to create a Virtual environment before installing these packages
+# paste this in your vsc command line:  python -m venv <name of your environment>
+asgiref==3.8.1
+Django==5.2.3
+sqlparse==0.5.3
+tzdata==2025.2

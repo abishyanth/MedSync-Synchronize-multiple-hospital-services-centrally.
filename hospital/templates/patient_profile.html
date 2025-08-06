@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Profile - {{ patient.pname }}</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('https://images.unsplash.com/photo-1588776814546-ec7d6cdd91f9') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', sans-serif;
+        }
+    
+        .overlay {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.1);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .profile-card {
+            background: rgb(168, 217, 219);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            color: #fff;
+            text-align: center;
+        }
+    
+        .profile-header {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #00e6e6; /* bright cyan */
+            text-shadow: 1px 1px 2px #000;
+        }
+    
+        .profile-info {
+            text-align: left;
+            margin-top: 20px;
+        }
+    
+        .info-row {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 5px;
+        }
+    
+        .label {
+            font-weight: 600;
+            color: #ffc107; /* golden yellow */
+        }
+    
+        .value {
+            color: #f8f9fa; /* light grey/white */
+            text-shadow: 1px 1px 1px #000;
+        }
+    
+        .text-warning {
+            color: #ff4d4d !important; /* red if profile is missing */
+        }
+    
+        .btn-back {
+            margin-top: 30px;
+            background-color: #00bcd4;
+            color: #fff;
+            border: none;
+        }
+    
+        .btn-back:hover {
+            background-color: #0097a7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay">
+    <div class="profile-card">
+        <div class="profile-header">
+            🧾 Patient Health ID - {{ patient.id }}
+        </div>
+
+        <div class="profile-info">
+            <div class="info-row">
+                <div class="label">Age:</div>
+                <div class="value">{{ patient.page }}</div>
+            </div>
+            <div class="info-row">
+                <div class="label">Doctor:</div>
+                <div class="value">{{ patient.Doctor.dname }}</div>
+            </div>
+            <div class="info-row">
+                <div class="label">Department:</div>
+                <div class="value">{{ patient.Doctor.Department.dname }}</div>
+            </div>
+            {% if profile %}
+            <div class="info-row">
+                <div class="label">Contact:</div>
+                <div class="value">{{ profile.pcontact }}</div>
+            </div>
+            <div class="info-row">
+                <div class="label">Email:</div>
+                <div class="value">{{ profile.pmail }}</div>
+            </div>
+            <div class="info-row">
+                <div class="label">Address:</div>
+                <div class="value">{{ profile.p_address }}</div>
+            </div>
+            {% else %}
+            <div class="info-row">
+                <div class="label">Profile Status:</div>
+                <div class="value text-warning">Profile not yet created.</div>
+            </div>
+            {% endif %}
+        </div>
+
+    {% if request.GET.from == 'doctor' %}
+    <a href="{% url 'hospital:doctor_profile' patient.Doctor.id %}" class="btn btn-light btn-back">
+        ⬅ Back to Doctor Profile
+    </a>
+    {% else %}
+    <a href="{% url 'hospital:patient_list' patient.Doctor.Department.hospital.id %}" class="btn btn-light btn-back">
+        ⬅ Back to Patient List
+    </a>
+    {% endif %}
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

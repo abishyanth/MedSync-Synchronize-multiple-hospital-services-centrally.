@@ -1,0 +1,85 @@
+{% extends 'main.html' %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hospitals Gallery</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hospital-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: calc(50% - 20px);
+            text-align: center;
+            padding: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .hospital-card:hover {
+            transform: scale(1.02);
+        }
+
+        .hospital-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .hospital-name {
+            font-size: 18px;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none; 
+        }
+
+        @media (max-width: 768px) {
+            .hospital-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+{% include 'nav.html' %}
+
+{% load static %}
+
+<div class="container">
+    <div class="grid">
+        {% for hospital in hospitals %}
+            <a href="{% url 'hospital:hospital_detail' hospital.id %}" class="hospital-card">
+                <img src="{% static 'hospital_images/' %}{{ hospital.image }}" alt="{{ hospital.hname }}">
+                <div class="hospital-name" style="margin-top: 10px; font-weight: bold; color: #333;">
+                    {{ hospital.hname }}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+
+{% endblock content %}
