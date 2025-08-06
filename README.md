@@ -42,6 +42,8 @@ python manage.py makemigrations
 python manage.py migrate
 
 # Create a superuser
+# user name: Hadmin
+# password: hospital
 python manage.py createsuperuser
 
 # Launch development server
