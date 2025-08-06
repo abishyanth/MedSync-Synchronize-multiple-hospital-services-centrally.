@@ -48,3 +48,43 @@ python manage.py createsuperuser
 
 # Launch development server
 python manage.py runserver
+
+
+🧭 Usage
+Superuser: Add hospitals, departments, doctors, and patients. Manage all assignments.
+
+Doctor: Log in to view and add patients in your assigned department.
+
+Patient: Log in to fill profile and book appointments; see your doctor’s list.
+
+🔖 URL Structure Overview
+/
+📂 hospital/
+   ├── /                   → Dashboard (hospital list)
+   ├── /<id>/             → Hospital Detail
+   ├── /<id>/doctors/     → Doctor list by hospital
+   ├── /<id>/patients/    → Patient list by hospital
+   ├── /add_department/   → Add new department
+   └── /add_doctor/       → Add new doctor
+/auth/
+   ├── signup             → Role-based registration (admin/doctor/patient)
+   ├── login
+   └── logout
+
+
+🏗 Folder Structure
+MedSync/
+├── hospital/         # Main Django app
+├── authentication/   # Authentication & signup/login , contains app level template and static
+├── hms_project/      # Django settings & core , contains app level template and static
+├── manage.py
+└── requirements.txt
+
+🙏 Acknowledgements
+Inspired by GitDocify README aesthetics and modular template structure.
+Built with love using Django and Bootstrap.
+
+💬 Contact
+Abishyanth S
+✉️ abishyanth14@gmail.com
+🔗 LinkedIn : https://www.linkedin.com/in/kartik-d-k-470942153/
