@@ -1,77 +1,238 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patients - {{ hospital.hname }}</title>
-
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f8f9fa;
+        .modern-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-        .container {
-            margin-top: 50px;
+        .modern-table thead th {
+            background: linear-gradient(135deg, rgba(3, 233, 244, 0.2), rgba(157, 78, 221, 0.2));
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border: none;
         }
 
-        h2 {
-            margin-bottom: 30px;
-            text-align: center;
+        .modern-table thead th:first-child {
+            border-radius: 12px 0 0 0;
         }
 
-        table {
-            background-color: white;
+        .modern-table thead th:last-child {
+            border-radius: 0 12px 0 0;
+        }
+
+        .modern-table tbody tr {
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+        }
+
+        .modern-table tbody tr:hover {
+            background: rgba(3, 233, 244, 0.1);
+        }
+
+        .modern-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .modern-table tbody tr:last-child td:first-child {
+            border-radius: 0 0 0 12px;
+        }
+
+        .modern-table tbody tr:last-child td:last-child {
+            border-radius: 0 0 12px 0;
+        }
+
+        .patient-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .patient-link:hover {
+            color: var(--accent-purple);
+            text-decoration: underline;
+        }
+
+        .doctor-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(157, 78, 221, 0.2);
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+        }
+
+        .department-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(3, 233, 244, 0.1);
+            border: 1px solid rgba(3, 233, 244, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.4);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: #2ecc71;
+        }
+
+        .btn-remove {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-remove:hover {
+            background: rgba(255, 107, 107, 0.3);
+            color: #fff;
         }
     </style>
 </head>
+
 <body>
-    {% include 'hds_nav.html' %}
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
 
-<div class="container">
-    <h2>Patients at {{ hospital.hname }}</h2>
+    <!-- Modern Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-modern">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'hospital:landing' %}">HOSPITAL MANAGEMENT</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'hospital:hospitals' %}">All Hospitals</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="{% url 'hospital:hospital_detail' hospital.id %}">{{ hospital.hname
+                            }}</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link active">Patients</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:logout_view' %}">Logout</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    {% if patients %}
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Patient Name</th>
-                    <th>Age</th>
-                    <th>Doctor</th>
-                    <th>Department</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for patient in patients %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td><a href="{% url 'hospital:patient_profile' patient.id %}">{{ patient.pname }}</a></td>
-                    <td>{{ patient.page }}</td>
-                    <td>{{ patient.Doctor.dname }}</td>
-                    <td>{{ patient.Doctor.Department.dname }}</td>
-                    <td>
-                        <span class="badge bg-success">Confirmed</span>
-                        <form method="post" action="{% url 'hospital:remove_patient' patient.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm ms-2">Remove</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-        <p class="text-center">No patients registered for this hospital.</p>
-    {% endif %}
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Page Header -->
+    <section class="features-section" style="padding: 3rem 2rem 2rem;">
+        <div class="section-header">
+            <span class="section-tag">👥 Patient Records</span>
+            <h2 class="section-title">Patients at {{ hospital.hname }}</h2>
+            <p class="section-subtitle">View and manage patient information</p>
+        </div>
+    </section>
 
+    <!-- Patients Table -->
+    <section style="padding: 0 2rem 4rem;">
+        <div class="container-custom">
+            {% if patients %}
+            <div class="glass-card" style="padding: 0; overflow: hidden;">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Patient Name</th>
+                            <th>Age</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <a href="{% url 'hospital:patient_profile' patient.id %}" class="patient-link">
+                                    👤 {{ patient.pname }}
+                                </a>
+                            </td>
+                            <td>{{ patient.page }} years</td>
+                            <td><span class="doctor-badge">{{ patient.Doctor.dname }}</span></td>
+                            <td><span class="department-badge">{{ patient.Doctor.Department.dname }}</span></td>
+                            <td>
+                                <span class="status-badge">✓ Confirmed</span>
+                                {% if user.is_superuser %}
+                                <form method="post" action="{% url 'hospital:remove_patient' patient.id %}"
+                                    style="display:inline; margin-left: 0.5rem;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-remove">Remove</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="glass-card" style="text-align: center; padding: 3rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                <h3 style="margin-bottom: 0.5rem;">No Patients Yet</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    No patients are registered at this hospital.
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Back Button -->
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="{% url 'hospital:hospital_detail' hospital.id %}" class="btn-animated">
+                    <span>← Back to Hospital</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-modern">
+        <div class="footer-brand">{{ hospital.hname }}</div>
+        <p class="footer-text">Part of the Hospital Management System</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -4,7 +4,8 @@ from . import views
 app_name = 'hospital'
 
 urlpatterns= [
-    path('', views.hospitals, name='hospitals'),
+    path('', views.landing, name='landing'),
+    path('hospitals/', views.hospitals, name='hospitals'),
     path('hospitals/<int:hospital_id>/', views.hospital_detail_view, name='hospital_detail'),
     path('hospital/<int:hospital_id>/doctors/', views.doctor_list_view, name='doctor_list'),
     path('hospital/<int:hospital_id>/patients/', views.patient_list_view, name='patient_list'),

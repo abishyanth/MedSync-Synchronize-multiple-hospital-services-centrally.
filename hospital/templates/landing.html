@@ -1,0 +1,175 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Animated Background -->
+<div class="animated-bg"></div>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-modern">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'hospital:landing' %}">HOSPITAL MANAGEMENT</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hospital:hospitals' %}">Hospitals</a>
+                </li>
+                {% if user.is_authenticated %}
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'hospital:add_hospital' %}">Add Hospital</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <span class="nav-link" style="color: var(--accent-cyan);">Welcome, {{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:logout_view' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:login_view' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:signup_view' %}">Sign Up</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-badge">🏥 Modern Healthcare Management</div>
+        <h1 class="hero-title">
+            Transforming <span class="highlight">Healthcare</span><br>
+            One Hospital at a Time
+        </h1>
+        <p class="hero-subtitle">
+            Streamline your hospital operations with our comprehensive management system. 
+            Manage doctors, patients, departments, and appointments all in one place.
+        </p>
+        <div class="hero-buttons">
+            <a href="{% url 'hospital:hospitals' %}" class="btn-animated btn-animated-filled">
+                <span>View Hospitals</span>
+            </a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'authentication:signup_view' %}" class="btn-animated">
+                <span>Get Started</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="section-header">
+        <span class="section-tag">Features</span>
+        <h2 class="section-title">Everything You Need</h2>
+        <p class="section-subtitle">Powerful tools designed to simplify healthcare management</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="glass-card feature-card">
+            <div class="feature-icon">👨‍⚕️</div>
+            <h3 class="feature-title">Doctor Management</h3>
+            <p class="feature-description">
+                Easily manage doctor profiles, specializations, departments, and schedules in one centralized location.
+            </p>
+        </div>
+        
+        <div class="glass-card feature-card">
+            <div class="feature-icon">🏥</div>
+            <h3 class="feature-title">Multi-Hospital Support</h3>
+            <p class="feature-description">
+                Manage multiple hospitals and their departments from a single dashboard with ease.
+            </p>
+        </div>
+        
+        <div class="glass-card feature-card">
+            <div class="feature-icon">👥</div>
+            <h3 class="feature-title">Patient Records</h3>
+            <p class="feature-description">
+                Maintain comprehensive patient profiles with contact information, medical history, and appointments.
+            </p>
+        </div>
+        
+        <div class="glass-card feature-card">
+            <div class="feature-icon">📋</div>
+            <h3 class="feature-title">Department Organization</h3>
+            <p class="feature-description">
+                Organize your hospital into departments for better workflow and resource management.
+            </p>
+        </div>
+        
+        <div class="glass-card feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3 class="feature-title">Secure Access</h3>
+            <p class="feature-description">
+                Role-based access control ensures that sensitive information is protected and accessible only to authorized users.
+            </p>
+        </div>
+        
+        <div class="glass-card feature-card">
+            <div class="feature-icon">📱</div>
+            <h3 class="feature-title">Responsive Design</h3>
+            <p class="feature-description">
+                Access the system from any device - desktop, tablet, or mobile phone with full functionality.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <h3>{{ hospital_count|default:"10" }}+</h3>
+            <p>Hospitals Managed</p>
+        </div>
+        <div class="stat-item">
+            <h3>{{ doctor_count|default:"100" }}+</h3>
+            <p>Doctors Registered</p>
+        </div>
+        <div class="stat-item">
+            <h3>{{ patient_count|default:"1000" }}+</h3>
+            <p>Patients Served</p>
+        </div>
+        <div class="stat-item">
+            <h3>24/7</h3>
+            <p>System Availability</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-box">
+        <h2 class="cta-title">Ready to Get Started?</h2>
+        <p class="cta-subtitle">
+            Join thousands of healthcare professionals who trust our system for their daily operations.
+        </p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'hospital:hospitals' %}" class="btn-animated btn-animated-filled">
+            <span>Browse Hospitals</span>
+        </a>
+        {% else %}
+        <a href="{% url 'authentication:signup_view' %}" class="btn-animated btn-animated-filled">
+            <span>Create Free Account</span>
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer-modern">
+    <div class="footer-brand">HOSPITAL MANAGEMENT</div>
+    <p class="footer-text">&copy; 2026 Hospital Management System. All rights reserved.</p>
+</footer>
+{% endblock content %}

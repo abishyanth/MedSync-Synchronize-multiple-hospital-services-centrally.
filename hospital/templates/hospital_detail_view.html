@@ -1,41 +1,225 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>{{ hospital.hname }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ hospital.hname }} - Hospital Management System">
+    <title>{{ hospital.hname }} - Hospital Management</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
 
-    {% load static %}
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Modern Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-modern">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'hospital:landing' %}">HOSPITAL MANAGEMENT</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'hospital:hospitals' %}">All Hospitals</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'hospital:hospital_detail' hospital.id %}">{{
+                            hospital.hname }}</a>
+                    </li> -->
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link" style="color: var(--accent-cyan);">{{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:logout_view' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:login_view' %}">Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Hospital Image -->
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: url("{% static 'hospital_images/' %}{{ hospital.image }}") no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-        }
-
-        .overlay {
-            background-color: rgba(0, 0, 0, 0.6);
-            min-height: 100vh;
-            padding: 50px 20px;
+        .hospital-hero {
+            position: relative;
+            min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
+            text-align: center;
+            background: linear-gradient(rgba(15, 15, 26, 0.7), rgba(15, 15, 26, 0.9)),
+            url("{% static 'hospital_images/' %}{{ hospital.image }}") center/cover no-repeat;
+            padding: 4rem 2rem;
         }
-
-
-
     </style>
-</head>
-<body>
-    {% include 'hds_nav.html' %}
+    <section class="hospital-hero">
+        <div class="hero-content">
+            <div class="hero-badge" style="margin-bottom: 1.5rem;">
+                <span>📍 {{ hospital.hcity }}</span>
+            </div>
+            <h1 class="hero-title" style="font-size: clamp(2rem, 5vw, 3.5rem);">
+                <span class="highlight">{{ hospital.hname }}</span>
+            </h1>
+            <p class="hero-subtitle" style="max-width: 500px; margin: 1rem auto 2rem;">
+                Comprehensive healthcare services with world-class medical professionals
+            </p>
+            <a href="{% url 'hospital:hospitals' %}" class="btn-animated">
+                <span>← Back to Hospitals</span>
+            </a>
+        </div>
+    </section>
 
-    <div class="overlay">
-        
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <!-- Stats Section -->
+    <section class="stats-section" style="padding: 3rem 2rem;">
+        <div class="stats-grid" style="max-width: 900px;">
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏢</div>
+                <h3 class="text-gradient" style="font-size: 2rem;">{{ department_count }}</h3>
+                <p style="color: var(--text-secondary); margin: 0;">Departments</p>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👨‍⚕️</div>
+                <h3 class="text-gradient" style="font-size: 2rem;">{{ doctor_count }}</h3>
+                <p style="color: var(--text-secondary); margin: 0;">Doctors</p>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👥</div>
+                <h3 class="text-gradient" style="font-size: 2rem;">{{ patient_count }}</h3>
+                <p style="color: var(--text-secondary); margin: 0;">Patients</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="features-section" style="padding: 3rem 2rem;">
+        <div class="section-header" style="margin-bottom: 2rem;">
+            <span class="section-tag">Actions</span>
+            <h2 class="section-title" style="font-size: 2rem;">Quick Access</h2>
+        </div>
+
+        <div class="features-grid" style="max-width: 1000px; margin: 0 auto;">
+            <!-- View Doctors -->
+            <a href="{% url 'hospital:doctor_list' hospital.id %}" class="glass-card feature-card"
+                style="text-decoration: none; color: inherit;">
+                <div class="feature-icon">👨‍⚕️</div>
+                <h3 class="feature-title">View Doctors</h3>
+                <p class="feature-description">
+                    Browse all {{ doctor_count }} doctors working at this hospital
+                </p>
+            </a>
+
+            <!-- View Patients -->
+            {% if user.is_authenticated and not is_patient or user.is_superuser %}
+            <a href="{% url 'hospital:patient_list' hospital.id %}" class="glass-card feature-card"
+                style="text-decoration: none; color: inherit;">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">View Patients</h3>
+                <p class="feature-description">
+                    Access patient records and information
+                </p>
+            </a>
+            {% endif %}
+
+            <!-- Add Department (Admin only) -->
+            {% if user.is_superuser %}
+            <a href="{% url 'hospital:add_department' hospital.id %}" class="glass-card feature-card"
+                style="text-decoration: none; color: inherit;">
+                <div class="feature-icon">➕</div>
+                <h3 class="feature-title">Add Department</h3>
+                <p class="feature-description">
+                    Create a new department in this hospital
+                </p>
+            </a>
+            {% endif %}
+
+            <!-- Add Doctor (Admin/Doctor) -->
+            {% if user.is_superuser or is_doctor %}
+            <a href="{% url 'hospital:add_doctor' hospital.id %}" class="glass-card feature-card"
+                style="text-decoration: none; color: inherit;">
+                <div class="feature-icon">🩺</div>
+                <h3 class="feature-title">Add Doctor</h3>
+                <p class="feature-description">
+                    Register a new doctor to this hospital
+                </p>
+            </a>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Departments Section -->
+    {% if departments %}
+    <section class="features-section"
+        style="padding: 3rem 2rem; background: linear-gradient(135deg, rgba(3, 233, 244, 0.03), rgba(157, 78, 221, 0.03));">
+        <div class="section-header" style="margin-bottom: 2rem;">
+            <span class="section-tag">Organization</span>
+            <h2 class="section-title" style="font-size: 2rem;">Departments</h2>
+            <p class="section-subtitle">Medical departments available at this facility</p>
+        </div>
+
+        <div class="hospitals-grid" style="max-width: 1000px; margin: 0 auto;">
+            {% for dept in departments %}
+            <div class="glass-card" style="padding: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="
+                    width: 50px; 
+                    height: 50px; 
+                    background: linear-gradient(135deg, rgba(3, 233, 244, 0.2), rgba(157, 78, 221, 0.2));
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.5rem;
+                ">🏥</div>
+                    <div>
+                        <h3 style="font-size: 1.25rem; margin: 0;">{{ dept.dname }}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">📍 {{ dept.d_loc }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% else %}
+    <section class="features-section" style="padding: 3rem 2rem;">
+        <div class="glass-card" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 3rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🏢</div>
+            <h3 style="margin-bottom: 0.5rem;">No Departments Yet</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                This hospital doesn't have any departments configured.
+            </p>
+            {% if user.is_superuser %}
+            <a href="{% url 'hospital:add_department' hospital.id %}" class="btn-animated btn-animated-filled">
+                <span>Add First Department</span>
+            </a>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="footer-modern">
+        <div class="footer-brand">{{ hospital.hname }}</div>
+        <p class="footer-text">Part of the Hospital Management System</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

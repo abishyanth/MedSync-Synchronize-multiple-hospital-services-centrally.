@@ -1,6 +1,16 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Hospital,Department,Doctor,Doctor_Profile,Patient,Patient_Profile,Appointment
 # Create your views here.
+
+def landing(request):
+    """Landing page view with statistics"""
+    context = {
+        'hospital_count': Hospital.objects.count(),
+        'doctor_count': Doctor.objects.count(),
+        'patient_count': Patient.objects.count(),
+    }
+    return render(request, 'landing.html', context)
+
 def main(request):
     return render(request, 'main.html')
 
@@ -12,13 +22,25 @@ def hospital_detail_view(request, hospital_id):
     hospital = get_object_or_404(Hospital, id=hospital_id)
     
     user = request.user
-    is_doctor = user.groups.filter(name='doctor').exists()
-    is_patient = user.groups.filter(name='patient').exists()
+    is_doctor = user.groups.filter(name='doctor').exists() if user.is_authenticated else False
+    is_patient = user.groups.filter(name='patient').exists() if user.is_authenticated else False
+    
+    # Get departments for this hospital
+    departments = Department.objects.filter(hospital=hospital)
+    
+    # Get statistics
+    department_count = departments.count()
+    doctor_count = Doctor.objects.filter(Department__hospital=hospital).count()
+    patient_count = Patient.objects.filter(Doctor__Department__hospital=hospital).count()
 
     context = {
         'hospital': hospital,
         'is_doctor': is_doctor,
         'is_patient': is_patient,
+        'departments': departments,
+        'department_count': department_count,
+        'doctor_count': doctor_count,
+        'patient_count': patient_count,
     }
 
     return render(request, 'hospital_detail_view.html', context)

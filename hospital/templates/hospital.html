@@ -1,85 +1,88 @@
 {% extends 'main.html' %}
-{% block content %}
-
-<head>
-    <meta charset="UTF-8">
-    <title>Hospitals Gallery</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-
-        .grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .hospital-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: calc(50% - 20px);
-            text-align: center;
-            padding: 15px;
-            transition: transform 0.3s ease;
-        }
-
-        .hospital-card:hover {
-            transform: scale(1.02);
-        }
-
-        .hospital-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .hospital-name {
-            font-size: 18px;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #2c3e50;
-            text-decoration: none; 
-        }
-
-        @media (max-width: 768px) {
-            .hospital-card {
-                width: 100%;
-            }
-        }
-    </style>
-</head>
-<body>
-
-{% include 'nav.html' %}
-
 {% load static %}
 
-<div class="container">
-    <div class="grid">
+{% block content %}
+<!-- Animated Background -->
+<div class="animated-bg"></div>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-modern">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'hospital:landing' %}">HOSPITAL MANAGEMENT</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'hospital:hospitals' %}">Hospitals</a>
+                </li>
+                {% if user.is_authenticated %}
+                {% if user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'hospital:add_hospital' %}">Add Hospital</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <span class="nav-link" style="color: var(--accent-cyan);">Welcome, {{ user.username }}</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'authentication:logout_view' %}">Logout</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'authentication:login_view' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'authentication:signup_view' %}">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Page Header -->
+<section class="features-section" style="padding-top: 4rem; padding-bottom: 2rem;">
+    <div class="section-header">
+        <span class="section-tag">Browse</span>
+        <h2 class="section-title">Our Hospitals</h2>
+        <p class="section-subtitle">Select a hospital to view details, doctors, and patient information</p>
+    </div>
+</section>
+
+<!-- Hospitals Grid -->
+<section class="hospitals-section">
+    <div class="hospitals-grid">
         {% for hospital in hospitals %}
-            <a href="{% url 'hospital:hospital_detail' hospital.id %}" class="hospital-card">
+        <a href="{% url 'hospital:hospital_detail' hospital.id %}" class="hospital-card-modern">
+            <div class="card-image">
                 <img src="{% static 'hospital_images/' %}{{ hospital.image }}" alt="{{ hospital.hname }}">
-                <div class="hospital-name" style="margin-top: 10px; font-weight: bold; color: #333;">
-                    {{ hospital.hname }}
-                </div>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">{{ hospital.hname }}</h3>
+                <p class="card-location">
+                    <span>📍</span> {{ hospital.hcity }}
+                </p>
+            </div>
+        </a>
+        {% empty %}
+        <div class="glass-card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <h3 style="margin-bottom: 1rem;">No hospitals available</h3>
+            <p style="color: var(--text-secondary);">Check back later or contact an administrator to add hospitals.</p>
+            {% if user.is_superuser %}
+            <a href="{% url 'hospital:add_hospital' %}" class="btn-animated" style="margin-top: 1.5rem;">
+                <span>Add First Hospital</span>
             </a>
+            {% endif %}
+        </div>
         {% endfor %}
     </div>
-</div>
+</section>
 
-</body>
-
+<!-- Footer -->
+<footer class="footer-modern">
+    <div class="footer-brand">HOSPITAL MANAGEMENT</div>
+    <p class="footer-text">&copy; 2026 Hospital Management System. All rights reserved.</p>
+</footer>
 {% endblock content %}
